@@ -1,0 +1,30 @@
+{
+  "name": "chronos7-jeu-concours",
+  "version": "1.0.0",
+  "description": "Chronos7 Jeu Concours",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm i && vite .",
+    "build": "pnpm i && pnpm build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "vite": "^5.4.9",
+    "vite-plugin-vuetify": "^2.1.1"
+  },
+  "dependencies": {
+    "@mdi/font": "^7.4.47",
+    "@vitejs/plugin-vue": "^5.1.4",
+    "axios": "^1.10.0",
+    "sass": "^1.80.3",
+    "unplugin-auto-import": "^0.18.3",
+    "vue": "^3.5.12",
+    "vue-router": "^4.5.1",
+    "vuetify": "^3.9.2",
+    "zod": "^4.0.5"
+  }
+}
