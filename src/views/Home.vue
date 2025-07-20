@@ -96,11 +96,11 @@
   const timeout = ref(5000);
 
   const form = ref({
-    nom: "Mansart",
-    prenom: "Esteban",
-    ville: "Ferrières-en-Bray",
-    email: "esteban.mansart@gmail.com",
-    pseudo: "esteban.mansart",
+    nom: "",
+    prenom: "",
+    ville: "",
+    email: "",
+    pseudo: "",
   });
   const fieldErrors = reactive({
     nom: [],
