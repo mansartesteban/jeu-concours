@@ -14,6 +14,9 @@ dependencies:
   axios:
     specifier: ^1.10.0
     version: 1.10.0
+  fireworks-js:
+    specifier: ^2.10.8
+    version: 2.10.8
   sass:
     specifier: ^1.80.3
     version: 1.80.3
@@ -810,6 +813,10 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       to-regex-range: 5.0.1
+
+  /fireworks-js@2.10.8:
+    resolution: {integrity: sha512-UZNxeJvRmQzLisN4iriWXqKojG9TDJqc0dPmkUw0/+AEQQ3w8z1Jx2YdFSiBGSVb/u4dPTQXU109GMVblzhfpg==}
+    dev: false
 
   /follow-redirects@1.15.9:
     resolution: {integrity: sha512-gew4GsXizNgdoRyqmyfMHyAmXsZDk6mHkSxZFCzW9gwlbtOW44CDtYavM+y+72qD/Vq2l550kMF52DT8fOLJqQ==}

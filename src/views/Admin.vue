@@ -36,11 +36,19 @@
             <v-card-title
               >Participants ({{ participants.length }})</v-card-title
             >
-            <v-card-text
-              class="text-center"
-              @click="start"
-            >
-              <v-btn color="warning">Lancer le tirage au sort !</v-btn>
+            <v-card-text class="text-center">
+              <v-btn
+                color="warning"
+                @click="start"
+                >Lancer le tirage au sort !</v-btn
+              >
+              <v-btn
+                color="error"
+                class="ml-4"
+                @click="reset"
+              >
+                Réinitialiser
+              </v-btn>
             </v-card-text>
 
             <div
@@ -55,7 +63,10 @@
                 z-index: 1000;
               "
               :style="{ display: show ? 'flex' : 'none' }"
-              @click="show = false"
+              @click="
+                show = false;
+                fireworks?.stop();
+              "
             >
               <MagicCard
                 ref="magicCard"
@@ -70,20 +81,33 @@
                     style="text-wrap: wrap"
                     >{{ winner.firstname }} {{ winner.lastname }}</v-card-title
                   >
-                  <v-card-subtitle
+                  <p
                     v-if="winner.pseudo"
                     style="text-wrap: wrap"
-                    class="text-caption text-h4 text-grey text-center"
+                    class="text-h6 text-grey text-center"
                   >
                     @{{ winner.pseudo }}
-                  </v-card-subtitle>
+                  </p>
                 </template>
               </MagicCard>
+              <div
+                ref="backdrop"
+                style="
+                  position: fixed;
+                  top: 0;
+                  left: 0;
+                  width: 100%;
+                  height: 100%;
+
+                  z-index: 1000;
+                "
+                :style="{ display: show ? 'flex' : 'none' }"
+              ></div>
             </div>
             <v-card-text>
               <v-row dense>
                 <v-col
-                  v-for="(user, index) in participants"
+                  v-for="(user, index) in filteredParticipants"
                   :key="index"
                   cols="12"
                   sm="6"
@@ -115,17 +139,15 @@
                   v-for="(winner, index) in winners"
                   :key="index"
                 >
-                  <v-list-item-content>
-                    <v-list-item-title class="text-h6">
-                      {{ winner.firstname }} {{ winner.lastname }}
-                    </v-list-item-title>
-                    <v-list-item-subtitle
-                      v-if="winner.pseudo"
-                      class="text-caption text-grey"
-                    >
-                      @{{ winner.pseudo }}
-                    </v-list-item-subtitle>
-                  </v-list-item-content>
+                  <v-list-item-title class="text-h6">
+                    {{ winner.firstname }} {{ winner.lastname }}
+                  </v-list-item-title>
+                  <v-list-item-subtitle
+                    v-if="winner.pseudo"
+                    class="text-caption text-grey"
+                  >
+                    @{{ winner.pseudo }}
+                  </v-list-item-subtitle>
                 </v-list-item>
               </v-list>
             </v-card-text>
@@ -141,6 +163,11 @@
   import { useAuth } from "@/composables/useAuth";
   import { useRoute } from "vue-router";
   import MagicCard from "./MagicCard.vue";
+
+  import { Fireworks } from "fireworks-js";
+
+  const backdrop = ref(null);
+
   const route = useRoute();
 
   const isAuthenticated = ref(false);
@@ -153,15 +180,27 @@
   };
 
   const participants = ref([]);
+  const filteredParticipants = computed(() => {
+    return participants.value.filter(
+      (p) => !winners.value.some((w) => w.id === p.id)
+    );
+  });
   const winner = ref(null);
   const winners = ref([]);
   const magicCard = ref(null);
   const show = ref(false);
+  const fireworks = ref(null);
 
+  const reset = () => {
+    winners.value = [];
+    localStorage.removeItem("winners");
+  };
   const addWinner = () => {
+    fireworks.value?.start();
     if (winner.value) {
       setTimeout(() => {
         winners.value.push(winner.value);
+        localStorage.setItem("winners", JSON.stringify(winners.value));
       }, 500);
     }
   };
@@ -172,10 +211,8 @@
     }
     // Fisher-Yates shuffle
     show.value = true;
-    winner.value = participants.value.splice(
-      Math.floor(Math.random() * participants.value.length),
-      1
-    )[0];
+    winner.value =
+      participants.value[Math.floor(Math.random() * participants.value.length)];
 
     setTimeout(() => {
       magicCard.value.start();
@@ -186,6 +223,10 @@
     const token = route.query.token;
     if (token) {
       setToken(token);
+    }
+
+    if (localStorage.getItem("winners")) {
+      winners.value = JSON.parse(localStorage.getItem("winners"));
     }
 
     if (localStorage.getItem("token")) {
@@ -208,6 +249,52 @@
           );
         });
     }
+
+    setTimeout(() => {
+      fireworks.value = new Fireworks(backdrop.value, {
+        hue: {
+          min: 0,
+          max: 30,
+        },
+        acceleration: 1,
+        brightness: {
+          min: 50,
+          max: 100,
+        },
+        decay: {
+          min: 0.005,
+          max: 0.013,
+        },
+        delay: {
+          min: 62.2,
+          max: 62.2,
+        },
+        explosion: 5,
+        flickering: 68.48,
+        intensity: 28.58,
+        friction: 0.99,
+        gravity: 2.5,
+        opacity: 0.2,
+        particles: 200,
+        traceLength: 3,
+        traceSpeed: 6,
+        rocketsPoint: {
+          min: 0,
+          max: 100,
+        },
+        lineWidth: {
+          explosion: {
+            min: 1,
+            max: 7,
+          },
+          trace: {
+            min: 0,
+            max: 1.3,
+          },
+        },
+        lineStyle: "round",
+      });
+    }, 0);
   });
 
   const loginWithGoogle = () => {

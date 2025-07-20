@@ -48,7 +48,7 @@
 <style scoped>
   .magic-card {
     z-index: 10000;
-    height: 500px;
+    height: 600px;
     width: 300px;
     position: relative;
     transform-style: preserve-3d;

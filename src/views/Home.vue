@@ -93,7 +93,7 @@
   import { z } from "zod";
 
   const snackbar = ref(false);
-  const timeout = ref(3000);
+  const timeout = ref(5000);
 
   const form = ref({
     nom: "Mansart",
@@ -175,7 +175,7 @@
 
     // En cas d’échec (sur desktop), redirige après 1s
     setTimeout(() => {
-      window.open(fallbackUrl, "_blank");
+      window.open(fallbackUrl, "_blank", "noopener,noreferrer");
     }, 1000);
   };
 </script>
